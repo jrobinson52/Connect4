@@ -56,13 +56,13 @@ namespace Connect4
                     }
 
                 full = isFull();
-                win = Hwin();
+                win = Gamewin();
 
             }
             drawBoard();
 
 
-            if (Hwin())
+            if (Gamewin())
                 Console.WriteLine(((player1) ? "Player 1" : "Player 2") + " wins!");
 
             if (full)
@@ -72,7 +72,7 @@ namespace Connect4
 
         }
 
-        private static bool Hwin()
+        private static bool Gamewin()
         {
 
 
@@ -199,7 +199,7 @@ namespace Connect4
                 else count = 0;
 
             for (int i = 0; i < up.Length; i++)
-                if (down[i] == spots[y, x])
+                if (up[i] == spots[y, x])
                 {
                     count++;
                     if (count > 3)
