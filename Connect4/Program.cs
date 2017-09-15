@@ -12,7 +12,7 @@ namespace Connect4
         static bool full = false;
         static bool win = false;
         static bool player1 = true;
-        
+
 
         static void Main(string[] args)
         {
@@ -56,13 +56,13 @@ namespace Connect4
                     }
 
                 full = isFull();
-
+                win = Hwin();
 
             }
             drawBoard();
 
 
-            if (win)
+            if (Hwin())
                 Console.WriteLine(((player1) ? "Player 1" : "Player 2") + " wins!");
 
             if (full)
@@ -74,20 +74,22 @@ namespace Connect4
 
         private static bool Hwin()
         {
+
+
             int count = 0;
             char current = '0';
 
-
-            for (int x = 0; x < 7; x++)
+            #region horizontal
+            for (int y = 0; y < 6; y++)
             {
-                for (int y = 0; y < 6; y++)
+                for (int x = 0; x < 7; x++)
                     if (spots[y, x] != '-')
                         if (spots[y, x] == current)
                         {
                             count++;
                             if (count == 4)
                             {
-                                player1 = spots[y, x] == '0';
+                                player1 = current == '0';
                                 return true;
                             }
                         }
@@ -99,7 +101,45 @@ namespace Connect4
                 count = 0;
 
             }
+            #endregion
 
+            #region vertical
+            for (int x = 0; x < 7; x++)
+            {
+                for (int y = 0; y < 6; y++)
+                    if (spots[y, x] != '-')
+                        if (spots[y, x] == current)
+                        {
+                            count++;
+                            if (count == 4)
+                            {
+                                player1 = current == '0';
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            count = 1;
+                            current = spots[y, x];
+                        }
+                count = 0;
+
+            }
+            #endregion
+
+            #region diagonal
+
+            for (int y = 0; y < 6; y++)
+            {
+                for (int x = 0; x < 7; x++)
+                    if (checkDiag(x, y) != '-')
+                    {
+                        player1 = spots[y, x] == '0';
+                        return true;
+                    }
+
+            }
+            #endregion
 
             return false;
         }
@@ -128,7 +168,7 @@ namespace Connect4
             }
 
             Console.WriteLine(" ");
-            Console.Write("Column:");
+            Console.WriteLine("Column:");
 
 
         }
@@ -143,6 +183,40 @@ namespace Connect4
             return true;
         }
 
+        private static char checkDiag(int x, int y)
+        {
+            char[] down = new char[] { cap(y - 3, x - 3), cap(y - 2, x - 2), cap(y - 1, x - 1), cap(y, x), cap(y + 1, x + 1), cap(y + 2, x + 2), cap(y + 3, x + 3) };
+            char[] up = new char[] { cap(y - 3, x + 3), cap(y - 2, x + 2), cap(y - 1, x + 1), cap(y, x), cap(y + 1, x - 1), cap(y + 2, x - 2), cap(y + 3, x - 3) };
+
+            int count = 0;
+            for (int i = 0; i < down.Length; i++)
+                if (down[i] == spots[y, x])
+                {
+                    count++;
+                    if (count > 3)
+                        return spots[y, x];
+                }
+                else count = 0;
+
+            for (int i = 0; i < up.Length; i++)
+                if (down[i] == spots[y, x])
+                {
+                    count++;
+                    if (count > 3)
+                        return spots[y, x];
+                }
+                else count = 0;
+
+
+            return '-';
+        }
+
+        public static char cap(int x, int y)
+        {
+            if (x < 0 || x > 6 || y < 0 || y > 5)
+                return '-';
+            return spots[y, x];
+        }
 
 
     }
